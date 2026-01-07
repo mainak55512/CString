@@ -196,3 +196,39 @@ String *string_get(Arena *arena) {
 
 	return st;
 }
+
+char *string_upper(Arena *arena, String *str){
+  if(!arena || !str || !str->str) return NULL;
+  
+  char *out = arena_alloc(arena, str->length + 1);
+  if(!out) return NULL;
+
+  for(size_t i=0 ;i < str->length; i++){
+    char c = str->str[i];
+    if(c >= 'a' && c <= 'z'){
+      c = c - ('a' - 'A');
+    }
+    out[i] = c;
+  }
+  out[str->length] = '\0';
+  return out;
+}
+
+char *string_lower(Arena *arena, String *str){
+    if(!arena || !str || !str->str) return NULL;
+    
+    char *out = arena_alloc(arena, str->length + 1);
+
+  if(!out) return NULL;
+
+  for(size_t i=0 ;i < str->length; i++){
+    char c = str->str[i];
+    if(c >= 'A' && c <= 'Z'){
+      c = c + ('a' - 'A');
+    }
+    out[i] = c;
+  }
+  out[str->length] = '\0';
+  return out;
+}
+ 

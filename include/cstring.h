@@ -61,4 +61,10 @@ String *string_trim(Arena *arena, String *str);
 /* Takes String input from console */
 String *string_get(Arena *arena);
 
+/* Converts all lower-case characters in a string to upper-case*/
+char *string_upper(Arena *arena, String *str);
+
+/* Converts all upper-case characters in a string to lower-case*/
+char *string_lower(Arena *arena, String *str);
+
 #endif // CSTRING_H
