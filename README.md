@@ -64,8 +64,8 @@ This will produce a static library named `libcstring.a` from the source file `li
 
 | Function | Description |
 | --- | --- |
-| `string_concat` | Joins two `String` objects into a new one. |
-| `string_concat_cstr` | Joins two raw C-string. |
+| `string_concat` | Joins n `String` objects into a new one. |
+| `string_concat_cstr` | Joins n raw C-strings. |
 | `string_sub` | Extracts a substring from `begin` (inclusive) to `end` (exclusive). |
 | `string_trim` | Removes leading and trailing whitespace. |
 
