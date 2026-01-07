@@ -1,5 +1,7 @@
 #include <cstring.h>
+#include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 struct String {
@@ -72,22 +74,35 @@ String *string_sub(Arena *arena, String *str, int begin, int end) {
 
 char *string(String *st) { return st->str; }
 
-String *string_concat_cstr(Arena *arena, char *s1, char *s2) {
-	String *st;
-	char *new_str;
+String *string_concat_cstr(Arena *arena, int n, ...) {
+	int i;
+	va_list args;
 
-	st = (String *)arena_alloc(arena, sizeof(String));
-	new_str = (char *)arena_alloc(arena, strlen(s1) + strlen(s2) + 1);
+	size_t length = 0;
+	va_start(args, n);
+	for (i = 0; i < n; i++) {
+		char *s = va_arg(args, char *);
+		length += strlen(s);
+	}
+	va_end(args);
 
-	memcpy(new_str, s1, strlen(s1));
-	memcpy(new_str + strlen(s1), s2, strlen(s2));
+	char *buf = arena_alloc(arena, length + 1);
 
-	new_str[strlen(s1) + strlen(s2)] = '\0';
+	char *p = buf;
+	va_start(args, n);
+	for (i = 0; i < n; i++) {
+		char *s = va_arg(args, char *);
+		size_t len = strlen(s);
+		memcpy(p, s, len);
+		p += len;
+	}
+	va_end(args);
+	*p = '\0';
 
-	st->str = new_str;
-	st->length = strlen(s1) + strlen(s2);
-
-	return st;
+	String *s = arena_alloc(arena, sizeof(*s));
+	s->str = buf;
+	s->length = length;
+	return s;
 }
 
 String *string_trim(Arena *arena, String *str) {
