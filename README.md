@@ -92,7 +92,7 @@ int main() {
 
     // 4. Concatenation and Trimming
     String *trimStr = string_trim(str_arena, s1);
-    String *combined = string_concat(str_arena, subStr, trimStr);
+    String *combined = string_concat(str_arena, 2, subStr, trimStr);
     
     printf("Result: %s\n", string(combined));
 
