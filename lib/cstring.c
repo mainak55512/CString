@@ -1,5 +1,7 @@
 #include <cstring.h>
+#include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 struct String {
@@ -26,37 +28,51 @@ String *string_from(Arena *arena, char *str) {
 }
 
 String *string_clone(Arena *arena, String *str) {
-    String *st;
-    char *new_str;
-
-    st = (String *)arena_alloc(arena, sizeof(String));
-    
-    new_str = (char *)arena_alloc(arena, str->length + 1);
-
-    memcpy(new_str, str->str, str->length);
-    new_str[str->length] = '\0';
-
-    st->str = new_str;
-    st->length = str->length;
-
-    return st;
-}
-
-String *string_concat(Arena *arena, String *str1, String *str2) {
 	String *st;
 	char *new_str;
 
 	st = (String *)arena_alloc(arena, sizeof(String));
-	new_str = (char *)arena_alloc(arena, str1->length + str2->length +
-											 1); // +1 for null terminator
 
-	memcpy(new_str, str1->str, str1->length);
-	memcpy(new_str + str1->length, str2->str, str2->length);
-	new_str[str1->length + str2->length] = '\0';
+	new_str = (char *)arena_alloc(arena, str->length + 1);
+
+	memcpy(new_str, str->str, str->length);
+	new_str[str->length] = '\0';
 
 	st->str = new_str;
-	st->length = str1->length + str2->length;
+	st->length = str->length;
+
 	return st;
+}
+
+String *string_concat(Arena *arena, int n, ...) {
+	int i;
+	va_list args;
+
+	size_t length = 0;
+	va_start(args, n);
+	for (i = 0; i < n; i++) {
+		String *s = va_arg(args, String *);
+		length += s->length;
+	}
+	va_end(args);
+
+	char *buf = arena_alloc(arena, length + 1);
+
+	char *p = buf;
+	va_start(args, n);
+	for (i = 0; i < n; i++) {
+		String *s = va_arg(args, String *);
+		size_t len = s->length;
+		memcpy(p, string(s), len);
+		p += len;
+	}
+	va_end(args);
+	*p = '\0';
+
+	String *s = arena_alloc(arena, sizeof(*s));
+	s->str = buf;
+	s->length = length;
+	return s;
 }
 
 int string_len(String *str) { return str->length; }
@@ -89,22 +105,35 @@ String *string_sub(Arena *arena, String *str, int begin, int end) {
 
 char *string(String *st) { return st->str; }
 
-String *string_concat_cstr(Arena *arena, char *s1, char *s2) {
-	String *st;
-	char *new_str;
+String *string_concat_cstr(Arena *arena, int n, ...) {
+	int i;
+	va_list args;
 
-	st = (String *)arena_alloc(arena, sizeof(String));
-	new_str = (char *)arena_alloc(arena, strlen(s1) + strlen(s2) + 1);
+	size_t length = 0;
+	va_start(args, n);
+	for (i = 0; i < n; i++) {
+		char *s = va_arg(args, char *);
+		length += strlen(s);
+	}
+	va_end(args);
 
-	memcpy(new_str, s1, strlen(s1));
-	memcpy(new_str + strlen(s1), s2, strlen(s2));
+	char *buf = arena_alloc(arena, length + 1);
 
-	new_str[strlen(s1) + strlen(s2)] = '\0';
+	char *p = buf;
+	va_start(args, n);
+	for (i = 0; i < n; i++) {
+		char *s = va_arg(args, char *);
+		size_t len = strlen(s);
+		memcpy(p, s, len);
+		p += len;
+	}
+	va_end(args);
+	*p = '\0';
 
-	st->str = new_str;
-	st->length = strlen(s1) + strlen(s2);
-
-	return st;
+	String *s = arena_alloc(arena, sizeof(*s));
+	s->str = buf;
+	s->length = length;
+	return s;
 }
 
 String *string_trim(Arena *arena, String *str) {
@@ -197,38 +226,43 @@ String *string_get(Arena *arena) {
 	return st;
 }
 
-char *string_upper(Arena *arena, String *str){
-  if(!arena || !str || !str->str) return NULL;
-  
-  char *out = arena_alloc(arena, str->length + 1);
-  if(!out) return NULL;
+char *string_upper(Arena *arena, String *str) {
+	size_t i;
+	if (!arena || !str || !str->str)
+		return NULL;
 
-  for(size_t i=0 ;i < str->length; i++){
-    char c = str->str[i];
-    if(c >= 'a' && c <= 'z'){
-      c = c - ('a' - 'A');
-    }
-    out[i] = c;
-  }
-  out[str->length] = '\0';
-  return out;
+	char *out = arena_alloc(arena, str->length + 1);
+	if (!out)
+		return NULL;
+
+	for (i = 0; i < str->length; i++) {
+		char c = str->str[i];
+		if (c >= 'a' && c <= 'z') {
+			c = c - ('a' - 'A');
+		}
+		out[i] = c;
+	}
+	out[str->length] = '\0';
+	return out;
 }
 
-char *string_lower(Arena *arena, String *str){
-    if(!arena || !str || !str->str) return NULL;
-    
-    char *out = arena_alloc(arena, str->length + 1);
+char *string_lower(Arena *arena, String *str) {
+	size_t i;
+	if (!arena || !str || !str->str)
+		return NULL;
 
-  if(!out) return NULL;
+	char *out = arena_alloc(arena, str->length + 1);
 
-  for(size_t i=0 ;i < str->length; i++){
-    char c = str->str[i];
-    if(c >= 'A' && c <= 'Z'){
-      c = c + ('a' - 'A');
-    }
-    out[i] = c;
-  }
-  out[str->length] = '\0';
-  return out;
+	if (!out)
+		return NULL;
+
+	for (i = 0; i < str->length; i++) {
+		char c = str->str[i];
+		if (c >= 'A' && c <= 'Z') {
+			c = c + ('a' - 'A');
+		}
+		out[i] = c;
+	}
+	out[str->length] = '\0';
+	return out;
 }
- 

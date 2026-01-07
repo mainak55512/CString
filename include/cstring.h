@@ -29,8 +29,6 @@ void arena_free(Arena **arena);
 
 #endif // ARENA_H
 
-#include <stdio.h>
-
 typedef struct String String;
 
 /* Creates a String object from c-string (char *) */
@@ -39,8 +37,8 @@ String *string_from(Arena *arena, char *str);
 /* Creates a deep copy of an existing String object */
 String *string_clone(Arena *arena, String *str);
 
-/* Concatinates two string objects */
-String *string_concat(Arena *arena, String *str1, String *str2);
+/* Concatinates n string objects */
+String *string_concat(Arena *arena, int n, ...);
 
 /* Returns the length of the string */
 int string_len(String *str);
@@ -52,8 +50,8 @@ String *string_sub(Arena *arena, String *str, int begin, int end);
 /* Returns the c-string (char *) from the String object */
 char *string(String *st);
 
-/* Concatinates two c-strings (char *) */
-String *string_concat_cstr(Arena *arena, char *s1, char *s2);
+/* Concatinates n c-strings (char *) */
+String *string_concat_cstr(Arena *arena, int n, ...);
 
 /* Trims all leading and trailing white-spaces from the String */
 String *string_trim(Arena *arena, String *str);
