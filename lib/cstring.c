@@ -27,21 +27,35 @@ String *string_from(Arena *arena, char *str) {
 	return st;
 }
 
-String *string_concat(Arena *arena, String *str1, String *str2) {
-	String *st;
-	char *new_str;
+String *string_concat(Arena *arena, int n, ...) {
+	int i;
+	va_list args;
 
-	st = (String *)arena_alloc(arena, sizeof(String));
-	new_str = (char *)arena_alloc(arena, str1->length + str2->length +
-											 1); // +1 for null terminator
+	size_t length = 0;
+	va_start(args, n);
+	for (i = 0; i < n; i++) {
+		String *s = va_arg(args, String *);
+		length += s->length;
+	}
+	va_end(args);
 
-	memcpy(new_str, str1->str, str1->length);
-	memcpy(new_str + str1->length, str2->str, str2->length);
-	new_str[str1->length + str2->length] = '\0';
+	char *buf = arena_alloc(arena, length + 1);
 
-	st->str = new_str;
-	st->length = str1->length + str2->length;
-	return st;
+	char *p = buf;
+	va_start(args, n);
+	for (i = 0; i < n; i++) {
+		String *s = va_arg(args, String *);
+		size_t len = s->length;
+		memcpy(p, string(s), len);
+		p += len;
+	}
+	va_end(args);
+	*p = '\0';
+
+	String *s = arena_alloc(arena, sizeof(*s));
+	s->str = buf;
+	s->length = length;
+	return s;
 }
 
 int string_len(String *str) { return str->length; }

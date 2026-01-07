@@ -36,8 +36,8 @@ typedef struct String String;
 /* Creates a String object from c-string (char *) */
 String *string_from(Arena *arena, char *str);
 
-/* Concatinates two string objects */
-String *string_concat(Arena *arena, String *str1, String *str2);
+/* Concatinates n string objects */
+String *string_concat(Arena *arena, int n, ...);
 
 /* Returns the length of the string */
 int string_len(String *str);
