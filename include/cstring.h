@@ -79,5 +79,4 @@ bool string_comp(struct String *s1, struct String *s2);
 /* Compares each corresponding character of two null-terminated strings with
 case sensitivity*/
 bool string_comp_case(struct String *s1, struct String *s2);
-
 #endif // CSTRING_H
