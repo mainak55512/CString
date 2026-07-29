@@ -5,20 +5,16 @@
     "compiler_path": "/usr/bin/clang-18",
     "flags": ["-O3", "-Wall"],
     "include_paths": [
-        "include"
+        "include",
+        "deps/arena/include"
     ],
     "src": [
-        "lib"
+        "lib",
+        "deps/arena/lib"
     ],
     "dependencies": {
         "arena": {
             "version": "0.1.1",
-            "include_paths": [
-                "include"
-            ],
-            "src": [
-                "lib"
-            ],
             "remote": "https://github.com/mainak55512/arena"
         }
     }
