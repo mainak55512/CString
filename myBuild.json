@@ -12,6 +12,12 @@
         "lib",
         "deps/arena/lib"
     ],
+    "static_lib": [
+        "static"
+    ],
+    "shared_lib": [
+        "shared"
+    ],
     "dependencies": {
         "arena": {
             "version": "0.1.1",
