@@ -30,6 +30,14 @@ This project is configured to be built as a static library. Note that the `CMake
 * **Compiler**: Clang 18
 
 ### Build Steps
+
+You can add the library in your **[flint](https://github.com/mainak55512/flint)** project directly:
+
+```bash
+flint add https://github.com/mainak55512/CString
+```
+Or if you are using CMake, follow the below steps:
+
 1. Clone the repository and navigate to the project folder.
 2. Create a build directory:
    ```bash
@@ -43,7 +51,6 @@ cmake ..
 make
 
 ```
-
 
 This will produce a static library named `libcstring.a` from the source file `lib/cstring.c`.
 
