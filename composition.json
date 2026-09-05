@@ -1,7 +1,7 @@
 {
     "project_name": "CString",
     "project_language": "c",
-    "version": "0.1.0",
+    "version": "v0.1.1",
     "compiler_path": "/usr/bin/clang-18",
     "flags": ["-O3", "-Wall"],
     "include_paths": [
@@ -20,7 +20,7 @@
     ],
     "dependencies": {
         "arena": {
-            "version": "0.1.1",
+            "version": "v0.1.1",
             "remote": "https://github.com/mainak55512/arena"
         }
     }
